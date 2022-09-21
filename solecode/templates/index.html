@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container mt-2">
+        <div class="card">
+            <div class="card-header">
+              <div class="row">
+                <div class="col">Parking Management</div>
+                <div class="col ml-auto"><span class="badge text-bg-success" id="badge">Success</span> Available Places</div>
+              </div>
+            </div>
+            <div class="card-body">
+                <form action="http://localhost:5000/add/" class="row" method="post">
+                    <div class="col-10">
+                      <input type="text" name="plat_no" class="form-control" id="inputPassword2" placeholder="Registration Number">
+                    </div>
+                    <div class="col-2">
+                      <button type="submit" class="btn btn-success" id="confirm" disabled>Park Car</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-white">
+                <table class="table table-striped" id="tableId">
+                    <thead>
+                        <tr>
+                            <th>Registration no</th>
+                            <th>Arrival</th>
+                            <th>Departure</th>
+                            <th>Status</th>
+                            <th>Bill</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      {% for row in container%}
+                      <form action="http://localhost:5000/update/{{ row[0] }}" method="post">
+                      <tr class="newrow" id="row{{ row[0] }}">
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[2] }}</td>
+                        <td>{{ row[3] }}</td>
+                        {% if row[4] == 0 %}
+                          <td>Parked</td>
+                        {% else %}
+                          <td>Has Left</td>
+                        {% endif %}
+                        {% if row[5] == 0 %}
+                          <td>-</td>
+                        {% else %}
+                          <td>{{ row[5] }}</td>
+                        {% endif %}
+                        <td><button type="submit" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#summary{{ row[0] }}">Summary</button></td>
+                      </tr>
+                        </form>
+                    </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+          </div>
+          {% block modal%}{% endblock %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+    {%block script%}{% endblock %}
+    <script>
+      var table = document.getElementById("tableId");
+      var tombol = document.getElementById("confirm");
+      const newElement = document.getElementById("badge");
+
+      var totalRowCount = table.rows.length - 1;
+      newElement.innerHTML = totalRowCount;
+
+      if (totalRowCount >= 20) {
+        tombol.disabled = true;
+      } else {
+        tombol.disabled = false;
+      }
+    </script>
+    <script> 
+      function delRow() {
+        $("#"+ $(".newrow").attr("id")).remove()
+      }
+    </script>
+  </body>
+</html>

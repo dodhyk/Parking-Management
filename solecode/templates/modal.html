@@ -1,0 +1,35 @@
+{% extends "index.html" %}
+{% block modal %}
+<div class="modal fade " id="summary{{ data[0] }}" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Summary</h5>
+        </div>
+        <div class="modal-body">
+        <form action="http://localhost:5000/out/{{ data[0] }}" method="post">
+          <label>Lama Parkir</label>
+          {% if data[3] != '0000-00-00 00:00:00' %}
+            <input type="text" name="long" class="form-control" value="{{ (data[3] - data[2]) }}" readonly>
+          {% endif %}
+          <label>Bill</label>
+            <input type="text" name="bill" class="form-control" value="{{ data[5] + 5000 }}" readonly>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger" data-bs-dismiss="modal" onclick="delRow();">Close</button>
+        </div>
+        </form>
+        </div>
+    </div>
+</div>
+{% endblock%}
+{% block script%}
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>
+$(document).ready(function() {
+  let identiti = ("#" + $(".modal").attr("id"));
+  console.log(identiti);
+  $(identiti).modal("show");
+})
+</script>
+{% endblock %}
